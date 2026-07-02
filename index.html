@@ -1,0 +1,1673 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Skulytics Product Update — June 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300;400;500;600;700;800&family=Fragment+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Light — pulled directly from skulytics.io */
+    --bg: #FAFAFA;
+    --surface: #FFFFFF;
+    --surface-2: #F5F7FA;
+    --surface-3: #FBFCFD;
+    --ink: #1A1919;
+    --ink-2: #0A0A0A;
+    --body: #464444;
+    --muted: #B0B0B0;
+    --line: #E6E6E6;
+    --line-2: #D1D1D1;
+    --brand: #0099FF;
+    --brand-2: #006EFB;
+    --brand-3: #4094FF;
+    --brand-tint: rgba(0, 153, 255, 0.08);
+    --brand-tint-2: rgba(0, 153, 255, 0.14);
+    --gradient-card: linear-gradient(180deg, var(--surface) 0%, #F4F9FF 100%);
+    --pattern-1: rgba(0, 153, 255, 0.025);
+    --pattern-2: rgba(0, 153, 255, 0.05);
+    --pattern-3: rgba(0, 110, 251, 0.03);
+    --logo-filter: none;
+
+    --font-display: 'Funnel Display', 'Inter', -apple-system, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Fragment Mono', ui-monospace, SFMono-Regular, monospace;
+  }
+
+  /* Dark theme */
+  body.dark {
+    --bg: #0A0E14;
+    --surface: #11161F;
+    --surface-2: #161C27;
+    --surface-3: #0E131B;
+    --ink: #F1F5F9;
+    --ink-2: #FFFFFF;
+    --body: #B8C3D1;
+    --muted: #6B7888;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-2: rgba(255, 255, 255, 0.12);
+    --brand: #1AA9FF;
+    --brand-2: #4094FF;
+    --brand-3: #6FB8FF;
+    --brand-tint: rgba(26, 169, 255, 0.12);
+    --brand-tint-2: rgba(26, 169, 255, 0.18);
+    --gradient-card: linear-gradient(180deg, var(--surface) 0%, #0F1A2A 100%);
+    --pattern-1: rgba(26, 169, 255, 0.05);
+    --pattern-2: rgba(26, 169, 255, 0.10);
+    --pattern-3: rgba(26, 169, 255, 0.06);
+    --logo-filter: brightness(1.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        transparent 0 40px,
+        var(--pattern-1) 40px 41px
+      ),
+      radial-gradient(circle at top right, var(--pattern-2), transparent 50%),
+      radial-gradient(circle at bottom left, var(--pattern-3), transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+    transition: background-image 0.4s ease;
+  }
+
+  body.dark .logo-mark,
+  body.dark .title-logo {
+    filter: var(--logo-filter);
+  }
+
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 5.5vh 6.5vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+    transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .slide.prev {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.985);
+  }
+
+  /* ============ STAGGERED IN/OUT ANIMATION ============ */
+  .slide > .header,
+  .slide > .kicker,
+  .slide > .slide-title,
+  .slide > .slide-lede,
+  .slide > .cards,
+  .slide > .spotlight,
+  .title-slide > *,
+  .closing-slide > * {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(4px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                filter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .slide.active > .header,
+  .slide.active > .kicker,
+  .slide.active > .slide-title,
+  .slide.active > .slide-lede,
+  .slide.active > .cards,
+  .slide.active > .spotlight,
+  .slide.active.title-slide > *,
+  .slide.active.closing-slide > * {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+
+  /* Stagger delays on the way IN */
+  .slide.active > .header        { transition-delay: 0.05s; }
+  .slide.active > .kicker        { transition-delay: 0.15s; }
+  .slide.active > .slide-title   { transition-delay: 0.25s; }
+  .slide.active > .slide-lede    { transition-delay: 0.35s; }
+  .slide.active > .cards         { transition-delay: 0.45s; }
+  .slide.active > .spotlight     { transition-delay: 0.40s; }
+
+  /* Title + closing have their own stagger sequence */
+  .slide.title-slide.active > *:nth-child(1) { transition-delay: 0.05s; }
+  .slide.title-slide.active > *:nth-child(2) { transition-delay: 0.18s; }
+  .slide.title-slide.active > *:nth-child(3) { transition-delay: 0.30s; }
+  .slide.title-slide.active > *:nth-child(4) { transition-delay: 0.42s; }
+  .slide.title-slide.active > *:nth-child(5) { transition-delay: 0.54s; }
+
+  .slide.closing-slide.active > *:nth-child(1) { transition-delay: 0.05s; }
+  .slide.closing-slide.active > *:nth-child(2) { transition-delay: 0.20s; }
+  .slide.closing-slide.active > *:nth-child(3) { transition-delay: 0.35s; }
+  .slide.closing-slide.active > *:nth-child(4) { transition-delay: 0.50s; }
+  .slide.closing-slide.active > *:nth-child(5) { transition-delay: 0.65s; }
+
+  /* Card-level stagger inside the .cards grid */
+  .slide.active > .cards > .card {
+    animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .slide.active > .cards > .card:nth-child(1) { animation-delay: 0.50s; }
+  .slide.active > .cards > .card:nth-child(2) { animation-delay: 0.62s; }
+  .slide.active > .cards > .card:nth-child(3) { animation-delay: 0.74s; }
+  .slide.active > .cards > .card:nth-child(4) { animation-delay: 0.86s; }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(28px) scale(0.97); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    filter: blur(0); }
+  }
+
+  /* Spotlight panels */
+  .slide.active > .spotlight > .spotlight-left {
+    animation: spotIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.50s;
+  }
+  .slide.active > .spotlight > .spotlight-right {
+    animation: spotIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: 0.62s;
+  }
+
+  @keyframes spotIn {
+    from { opacity: 0; transform: translateY(28px); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  }
+
+  /* Feature items stagger */
+  .slide.active .feature-item {
+    animation: featureIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .slide.active .feature-item:nth-child(1)  { animation-delay: 0.85s; }
+  .slide.active .feature-item:nth-child(2)  { animation-delay: 0.93s; }
+  .slide.active .feature-item:nth-child(3)  { animation-delay: 1.01s; }
+  .slide.active .feature-item:nth-child(4)  { animation-delay: 1.09s; }
+  .slide.active .feature-item:nth-child(5)  { animation-delay: 1.17s; }
+  .slide.active .feature-item:nth-child(6)  { animation-delay: 1.25s; }
+  .slide.active .feature-item:nth-child(7)  { animation-delay: 1.33s; }
+  .slide.active .feature-item:nth-child(8)  { animation-delay: 1.41s; }
+
+  @keyframes featureIn {
+    from { opacity: 0; transform: translateX(-14px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .slide.active .feature-item .check {
+    animation: checkPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  .slide.active .feature-item:nth-child(1) .check { animation-delay: 1.00s; }
+  .slide.active .feature-item:nth-child(2) .check { animation-delay: 1.08s; }
+  .slide.active .feature-item:nth-child(3) .check { animation-delay: 1.16s; }
+  .slide.active .feature-item:nth-child(4) .check { animation-delay: 1.24s; }
+  .slide.active .feature-item:nth-child(5) .check { animation-delay: 1.32s; }
+  .slide.active .feature-item:nth-child(6) .check { animation-delay: 1.40s; }
+  .slide.active .feature-item:nth-child(7) .check { animation-delay: 1.48s; }
+  .slide.active .feature-item:nth-child(8) .check { animation-delay: 1.56s; }
+
+  @keyframes checkPop {
+    0%   { transform: scale(0) rotate(-90deg); opacity: 0; }
+    60%  { transform: scale(1.2) rotate(0deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 3.2vh;
+  }
+
+  .logo-mark { height: 32px; width: auto; flex-shrink: 0; display: block; }
+
+  .brand-sub {
+    color: var(--body);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+    padding-left: 14px;
+    border-left: 1px solid var(--line);
+    margin-left: 4px;
+  }
+
+  /* Eyebrow / kicker */
+  .kicker {
+    font-family: var(--font-mono);
+    color: var(--brand);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 1vh;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .kicker::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--brand);
+  }
+
+  /* Slide title */
+  .slide-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    color: var(--ink-2);
+    margin-bottom: 1vh;
+  }
+
+  .slide-title .accent { color: var(--brand); }
+
+  .slide-lede {
+    color: var(--body);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    max-width: 68ch;
+    margin-bottom: 3vh;
+    line-height: 1.55;
+  }
+
+  /* ============ TITLE / SECTION SLIDES ============ */
+  .title-slide {
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .title-logo {
+    height: 72px;
+    width: auto;
+    margin-bottom: 3vh;
+  }
+
+  .title-eyebrow {
+    font-family: var(--font-mono);
+    color: var(--brand);
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 2.4vh;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .title-eyebrow::before,
+  .title-eyebrow::after {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--brand);
+  }
+
+  .title-slide h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1.0;
+    margin-bottom: 2vh;
+    color: var(--ink-2);
+  }
+
+  .title-slide h1 .accent { color: var(--brand); }
+
+  .title-slide .subtitle {
+    color: var(--body);
+    font-size: clamp(1rem, 1.4vw, 1.25rem);
+    max-width: 60ch;
+    line-height: 1.5;
+    margin-bottom: 4vh;
+  }
+
+  .title-meta {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .title-meta .dot {
+    width: 4px; height: 4px; border-radius: 50%; background: var(--brand);
+  }
+
+  /* ============ CARD GRID ============ */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4vw;
+    flex: 0 1 auto;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 2vh 1.6vw;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    min-height: 0;
+  }
+
+  .card:hover {
+    border-color: rgba(0, 153, 255, 0.4);
+    box-shadow: 0 8px 30px rgba(0, 153, 255, 0.08);
+  }
+
+  .card-index {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    margin-bottom: 1.2vh;
+  }
+
+  .card h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 1.35vw, 1.3rem);
+    font-weight: 600;
+    margin-bottom: 1vh;
+    color: var(--ink-2);
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+
+  .card p {
+    color: var(--body);
+    font-size: clamp(0.82rem, 0.92vw, 0.92rem);
+    line-height: 1.55;
+    margin-bottom: 1vh;
+  }
+
+  .card ul {
+    list-style: none;
+    margin-top: 0.6vh;
+  }
+
+  .card li {
+    color: var(--body);
+    font-size: clamp(0.78rem, 0.88vw, 0.88rem);
+    line-height: 1.55;
+    padding-left: 16px;
+    position: relative;
+    margin-bottom: 0.4vh;
+  }
+
+  .card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 8px;
+    height: 2px;
+    background: var(--brand);
+    border-radius: 1px;
+  }
+
+  .card li strong { color: var(--ink); font-weight: 600; }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 1.2vh;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--brand-tint);
+    color: var(--brand-2);
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(0, 153, 255, 0.2);
+  }
+
+  .tag.solid {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+  }
+
+  /* ============ SPOTLIGHT LAYOUT ============ */
+  .spotlight {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 2.5vw;
+    align-items: stretch;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .spotlight-left {
+    background: var(--gradient-card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 3vh 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .spotlight-left::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, transparent 60%, rgba(0, 153, 255, 0.06) 100%);
+    pointer-events: none;
+  }
+
+  .spotlight-name {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--ink-2);
+    margin-bottom: 1vh;
+  }
+
+  .spotlight-name .accent { color: var(--brand); }
+
+  .spotlight-tagline {
+    font-family: var(--font-mono);
+    color: var(--body);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    margin-bottom: 2vh;
+  }
+
+  .spotlight-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--brand-tint);
+    border: 1px solid rgba(0, 153, 255, 0.25);
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--brand-2);
+    letter-spacing: 0.05em;
+  }
+
+  .pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 0 rgba(0, 153, 255, 0.6);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 153, 255, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(0, 153, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 153, 255, 0); }
+  }
+
+  .spotlight-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4vh;
+    overflow: hidden;
+  }
+
+  .feature-block-title {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 1.2vw, 1.15rem);
+    font-weight: 600;
+    color: var(--ink-2);
+    margin-bottom: 0.6vh;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feature-block-title .pip {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--brand);
+    background: var(--brand-tint);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.08em;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6vh 1vw;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0.7vh 0;
+  }
+
+  .feature-item .check {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    background: var(--brand);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .feature-item .check.ip {
+    background: transparent;
+    border: 1.5px dashed var(--brand);
+    color: var(--brand);
+  }
+
+  .feature-item-text {
+    font-size: clamp(0.82rem, 0.92vw, 0.92rem);
+    line-height: 1.45;
+    color: var(--body);
+  }
+
+  .feature-item-text strong { color: var(--ink-2); font-weight: 600; }
+
+  .divider-soft {
+    height: 1px;
+    background: var(--line);
+    margin: 0.4vh 0;
+  }
+
+  /* ============ CLOSING SLIDE ============ */
+  .closing-slide {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .closing-slide .thanks {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: var(--ink-2);
+    margin-bottom: 2.5vh;
+  }
+
+  .closing-slide .thanks .accent { color: var(--brand); }
+
+  .closing-slide .closing-sub {
+    color: var(--body);
+    font-size: clamp(1rem, 1.5vw, 1.3rem);
+    max-width: 60ch;
+    line-height: 1.5;
+    margin-bottom: 3.5vh;
+  }
+
+  .closing-slide .signature {
+    font-family: var(--font-mono);
+    color: var(--brand);
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+
+  /* ============ FOOTER / NAV ============ */
+  .deck-footer {
+    position: fixed;
+    bottom: 18px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 3vw;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .progress-bar {
+    flex: 1;
+    max-width: 260px;
+    height: 2px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+    pointer-events: auto;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--brand);
+    width: 7.7%;
+    transition: width 0.4s ease;
+    border-radius: 2px;
+  }
+
+  .controls {
+    display: flex;
+    gap: 8px;
+    pointer-events: auto;
+  }
+
+  .ctrl-btn {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    font-family: var(--font-body);
+  }
+
+  .ctrl-btn:hover {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+  }
+
+  #theme .theme-icon-dark { display: none; }
+  body.dark #theme .theme-icon-light { display: none; }
+  body.dark #theme .theme-icon-dark { display: inline; }
+
+  .slide-counter {
+    font-family: var(--font-mono);
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    pointer-events: auto;
+  }
+
+  .slide-counter .current { color: var(--brand); }
+
+  .hint {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    z-index: 10;
+  }
+
+  .hint kbd {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--brand);
+    margin: 0 2px;
+    font-family: var(--font-mono);
+  }
+
+  /* ============ BEFORE-STATE PANEL VARIANT ============ */
+  .spotlight-left.before-panel {
+    background: linear-gradient(180deg, #fff8f8 0%, #fff5f5 100%);
+    border-color: rgba(220, 38, 38, 0.2);
+  }
+  body.dark .spotlight-left.before-panel {
+    background: linear-gradient(180deg, #1f1212 0%, #1a0f0f 100%);
+    border-color: rgba(248, 113, 113, 0.18);
+  }
+  .spotlight-status.status-before {
+    background: rgba(220, 38, 38, 0.08);
+    border-color: rgba(220, 38, 38, 0.25);
+    color: #DC2626;
+  }
+  body.dark .spotlight-status.status-before {
+    background: rgba(248, 113, 113, 0.10);
+    border-color: rgba(248, 113, 113, 0.20);
+    color: #FCA5A5;
+  }
+  .pulse.red {
+    background: #DC2626;
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
+    animation: pulse-red 2s infinite;
+  }
+  @keyframes pulse-red {
+    0%   { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+    70%  { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+  }
+
+  /* ============ BUG PRIORITY BADGES ============ */
+  .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.70rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .priority-badge.emergency { background: rgba(220,38,38,0.10);  color: #DC2626; border: 1px solid rgba(220,38,38,0.20); }
+  .priority-badge.urgent    { background: rgba(234,88,12,0.10);  color: #EA580C; border: 1px solid rgba(234,88,12,0.20); }
+  .priority-badge.high      { background: rgba(234,88,12,0.08);  color: #EA580C; border: 1px solid rgba(234,88,12,0.15); }
+  .priority-badge.normal    { background: rgba(37,99,235,0.08);  color: #2563EB; border: 1px solid rgba(37,99,235,0.15); }
+  .priority-badge.low       { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+  body.dark .priority-badge.emergency { color: #FCA5A5; background: rgba(248,113,113,0.10); border-color: rgba(248,113,113,0.20); }
+  body.dark .priority-badge.urgent    { color: #FB923C; background: rgba(251,146,60,0.10);  border-color: rgba(251,146,60,0.20); }
+  body.dark .priority-badge.high      { color: #FB923C; background: rgba(251,146,60,0.08);  border-color: rgba(251,146,60,0.15); }
+  body.dark .priority-badge.normal    { color: #60A5FA; background: rgba(96,165,250,0.08);  border-color: rgba(96,165,250,0.15); }
+
+  /* ============ STAT DISPLAY ============ */
+  .stat-big {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 4.5vw, 4.5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink-2);
+    margin-bottom: 0.4vh;
+  }
+  .stat-big.brand { color: var(--brand); }
+  .stat-big.red   { color: #DC2626; }
+  body.dark .stat-big.red { color: #FCA5A5; }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Code-style before/after boxes */
+  .code-box {
+    padding: 1vh 1vw;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin-top: 2vh;
+  }
+  .code-box.red {
+    background: rgba(220,38,38,0.06);
+    border: 1px solid rgba(220,38,38,0.12);
+    color: #DC2626;
+  }
+  .code-box.blue {
+    background: var(--brand-tint);
+    border: 1px solid rgba(0,153,255,0.2);
+    color: var(--brand-2);
+  }
+  body.dark .code-box.red { color: #FCA5A5; background: rgba(248,113,113,0.08); border-color: rgba(248,113,113,0.15); }
+
+  /* ============ BUG BAR CHART ============ */
+  .bug-bar {
+    transform: scaleY(0);
+    transform-origin: bottom;
+    will-change: transform;
+  }
+  .slide.active .bar-col-1 .bug-bar { animation: barRise 0.9s cubic-bezier(0.22,1,0.36,1) 0.50s both; }
+  .slide.active .bar-col-2 .bug-bar { animation: barRise 0.9s cubic-bezier(0.22,1,0.36,1) 0.65s both; }
+  .slide.active .bar-col-3 .bug-bar { animation: barRise 0.9s cubic-bezier(0.22,1,0.36,1) 0.80s both; }
+  .slide.active .bar-col-4 .bug-bar { animation: barRise 0.9s cubic-bezier(0.22,1,0.36,1) 0.95s both; }
+  @keyframes barRise {
+    from { transform: scaleY(0); }
+    to   { transform: scaleY(1); }
+  }
+  .slide.active .bar-col-1 .bar-num { animation: barNumIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.55s both; }
+  .slide.active .bar-col-2 .bar-num { animation: barNumIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.70s both; }
+  .slide.active .bar-col-3 .bar-num { animation: barNumIn 0.5s cubic-bezier(0.22,1,0.36,1) 0.85s both; }
+  .slide.active .bar-col-4 .bar-num { animation: barNumIn 0.5s cubic-bezier(0.22,1,0.36,1) 1.00s both; }
+  @keyframes barNumIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes zeroGlow {
+    0%, 100% { box-shadow: 0 0 8px #00FF88, 0 0 20px rgba(0,255,136,0.4), 0 0 0 0 rgba(0,255,136,0.3); }
+    50%       { box-shadow: 0 0 16px #00FF88, 0 0 40px rgba(0,255,136,0.6), 0 0 0 8px rgba(0,255,136,0); }
+  }
+  .zero-ring { animation: zeroGlow 2.2s ease-in-out infinite; }
+
+  @media (max-width: 980px) {
+    .cards, .spotlight, .feature-grid { grid-template-columns: 1fr !important; gap: 12px; }
+    .slide { padding: 5vh 6vw; overflow-y: auto; justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hint">
+  <kbd>←</kbd><kbd>→</kbd> navigate · <kbd>F</kbd> fullscreen · <kbd>T</kbd> theme · <kbd>Esc</kbd> exit
+</div>
+
+<div class="deck" id="deck">
+
+  <!-- ============ SLIDE 1: TITLE ============ -->
+  <section class="slide title-slide active" data-slide="1">
+    <img class="title-logo" src="assets/skulytics-logo.png" alt="Skulytics" />
+    <div class="title-eyebrow">Skulytics Product Update</div>
+    <h1 style="font-size:clamp(1.8rem,3.8vw,3.8rem)">Building a <span class="accent">Scalable</span>, Accurate, and<br>Real-Time Reliable Data Platform</h1>
+    <p class="subtitle">Presented by Raihan Ayita Putri &nbsp;·&nbsp; Product Manager, Skulytics</p>
+    <div class="title-meta">
+      <span>June 2026</span>
+      <span class="dot"></span>
+      <span>Q2 → Q3</span>
+      <span class="dot"></span>
+      <span>v.1.0</span>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2: THE JOURNEY ============ -->
+  <section class="slide" data-slide="2">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// our journey</div>
+    </div>
+    <div class="kicker">01 / Context</div>
+    <h2 class="slide-title">The journey we are <span class="accent">building</span></h2>
+    <p class="slide-lede">As Skulytics grows, our way of working needs to evolve — with clearer roles, better collaboration, and higher data quality.</p>
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="card">
+        <div class="card-index">— 01</div>
+        <h3>Clearer Ownership</h3>
+        <p>Each team member knows their role, reducing overlap and confusion in daily execution.</p>
+        <div class="tag-row"><span class="tag">Accountability</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 02</div>
+        <h3>Better Collaboration</h3>
+        <p>Teams work together more effectively with shared goals and transparent communication.</p>
+        <div class="tag-row"><span class="tag">Communication</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 03</div>
+        <h3>Higher Data Quality</h3>
+        <p>Higher data quality to support reliable platform growth and confident product decisions.</p>
+        <div class="tag-row"><span class="tag solid">Data</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 04</div>
+        <h3>More Scalable Processes</h3>
+        <p>More scalable processes that grow with the team — structured, repeatable, and built for the long term.</p>
+        <div class="tag-row"><span class="tag">Scalability</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3: TEAM STRUCTURE ============ -->
+  <section class="slide" data-slide="3">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// team structure</div>
+    </div>
+    <div class="kicker">02 / Ownership</div>
+    <h2 class="slide-title">Team Restructure <span class="accent">(Early April)</span></h2>
+    <p class="slide-lede">Creating clearer ownership and accountability</p>
+
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr); flex: 0 0 auto; align-items: start;">
+      <div class="card" style="display:flex;flex-direction:column;justify-content:flex-start;padding:3vh 2.2vw;">
+        <div style="display:flex;align-items:center;gap:1.2vw;margin-bottom:1.6vh;">
+          <img src="assets/1773132444221.jpeg" alt="Edwin"
+               style="width:130px;height:130px;border-radius:50%;object-fit:cover;object-position:top;flex-shrink:0;border:3px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,0.12);" />
+          <div>
+            <div class="kicker" style="margin-bottom:0.3vh">Data Engineering</div>
+            <h3 style="font-family:var(--font-display);font-size:clamp(1.4rem,2vw,2rem);font-weight:700;letter-spacing:-0.02em;color:var(--ink-2);margin:0;">Edwin</h3>
+          </div>
+        </div>
+        <div class="spotlight-status" style="margin-bottom:2vh;width:fit-content"><span class="pulse"></span> Lead</div>
+        <p style="color:var(--body);font-size:clamp(0.82rem,0.9vw,0.9rem);line-height:1.55;margin-bottom:2vh">Focused on scalable data pipelines, infrastructure, and technical execution across all Skulytics data systems.</p>
+        <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8vh">Team Members</div>
+        <div class="tag-row">
+          <span class="tag">Reyval</span>
+          <span class="tag">Haerul</span>
+          <span class="tag">Aiman</span>
+          <span class="tag">Randy</span>
+          <span class="tag">Daffa</span>
+        </div>
+      </div>
+
+      <div class="card" style="display:flex;flex-direction:column;justify-content:flex-start;padding:3vh 2.2vw;">
+        <div style="display:flex;align-items:center;gap:1.2vw;margin-bottom:1.6vh;">
+          <img src="assets/1773149335883.jpeg" alt="Putri"
+               style="width:130px;height:130px;border-radius:50%;object-fit:cover;object-position:top;flex-shrink:0;border:3px solid var(--line);box-shadow:0 4px 16px rgba(0,0,0,0.12);" />
+          <div>
+            <div class="kicker" style="margin-bottom:0.3vh">Data Quality</div>
+            <h3 style="font-family:var(--font-display);font-size:clamp(1.4rem,2vw,2rem);font-weight:700;letter-spacing:-0.02em;color:var(--ink-2);margin:0;">Putri</h3>
+          </div>
+        </div>
+        <div class="spotlight-status" style="margin-bottom:2vh;width:fit-content"><span class="pulse"></span> Lead</div>
+        <p style="color:var(--body);font-size:clamp(0.82rem,0.9vw,0.9rem);line-height:1.55;margin-bottom:2vh">Ensuring accuracy, validation, and reliability across all data outputs.</p>
+        <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8vh">Team Members</div>
+        <div class="tag-row">
+          <span class="tag">Luthfi</span>
+          <span class="tag">Kazan</span>
+          <span class="tag">Ali</span>
+          <span class="tag">Ainun</span>
+          <span class="tag">Senja</span>
+          <span class="tag">Adnan</span>
+          <span class="tag">Diki</span>
+          <span class="tag">Anisa</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 4: NEW STRUCTURE, BETTER EXECUTION ============ -->
+  <section class="slide" data-slide="4">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// execution model</div>
+    </div>
+    <div class="kicker">03 / Structure</div>
+    <h2 class="slide-title">Impact After <span class="accent">Restructure</span></h2>
+    <p style="font-family:var(--font-display);font-size:clamp(1.1rem,1.6vw,1.5rem);font-weight:600;color:var(--ink);letter-spacing:-0.01em;margin-bottom:0.6vh">New structure, better execution</p>
+    <p class="slide-lede">Proactive improvements and structured reviews ensure higher data quality and reliability across every sprint.</p>
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="card">
+        <div class="card-index">— 01</div>
+        <h3>Clearer Responsibility</h3>
+        <p>Each team member knows their role, reducing overlap and confusion in daily execution.</p>
+      </div>
+      <div class="card">
+        <div class="card-index">— 02</div>
+        <h3>Faster Collaboration</h3>
+        <p>Teams move faster with clear ownership and streamlined cross-functional workflows.</p>
+      </div>
+      <div class="card">
+        <div class="card-index">— 03</div>
+        <h3>Better Quality Control</h3>
+        <p>Regular reviews and clear validation steps help prevent data issues before they impact customers.</p>
+      </div>
+      <div class="card">
+        <div class="card-index">— 04</div>
+        <h3>More Proactive Improvements</h3>
+        <p>Structured reviews and ownership culture drive continuous improvement before issues reach clients.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 5: REACTIVE → PROACTIVE ============ -->
+  <section class="slide" data-slide="5">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// mindset shift</div>
+    </div>
+    <div class="kicker">04 / Shift</div>
+    <h2 class="slide-title">From <span class="accent">reactive</span> to proactive</h2>
+
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr); flex: 0 0 auto; align-items: start;">
+      <div class="card before-panel" style="border-color:rgba(220,38,38,0.2);background:linear-gradient(180deg,#fff8f8 0%,#fff5f5 100%);padding:2.5vh 2vw;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.6vh">
+          <span class="priority-badge emergency" style="font-size:0.78rem;padding:4px 12px">Before</span>
+        </div>
+        <p style="color:var(--body);font-size:clamp(0.85rem,0.95vw,0.95rem);line-height:1.6;margin-bottom:1.8vh">Issues were first discovered by clients — no internal detection in place before delivery.</p>
+        <ul>
+          <li style="color:#DC2626"><strong style="color:#DC2626">Client discovers issues</strong></li>
+          <li style="color:#DC2626"><strong style="color:#DC2626">Reactive response cycle</strong></li>
+          <li style="color:#DC2626"><strong style="color:#DC2626">No pre-release validation</strong></li>
+        </ul>
+      </div>
+
+      <div class="card" style="padding:2.5vh 2vw;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.6vh">
+          <span class="tag solid" style="font-size:0.78rem;padding:4px 12px;border-radius:6px">Now</span>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--brand);letter-spacing:0.08em">PROACTIVE</span>
+        </div>
+        <p style="color:var(--body);font-size:clamp(0.85rem,0.95vw,0.95rem);line-height:1.6;margin-bottom:1.8vh">Team now identifies and resolves issues internally before clients are impacted.</p>
+        <ul>
+          <li><strong>Daily discoveries</strong> — issues found through everyday work</li>
+          <li><strong>Weekly meeting</strong> — all findings collected &amp; reviewed together</li>
+          <li><strong>Data Accuracy Space</strong> — every finding logged and tracked</li>
+          <li><strong>Result:</strong> Decreased client-found bugs</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Process flow strip -->
+    <div style="display:flex;align-items:center;gap:0;margin-top:2vh;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;flex:0 0 auto;">
+      <div style="flex:1;padding:1.4vh 1.6vw;display:flex;align-items:center;gap:10px">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0"></span>
+        <div>
+          <div style="font-family:var(--font-display);font-weight:600;font-size:clamp(0.82rem,0.95vw,0.95rem);color:var(--ink-2)">Daily Discoveries</div>
+          <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);margin-top:2px">Found through everyday team work</div>
+        </div>
+      </div>
+      <div style="color:var(--brand);font-size:1.1rem;padding:0 0.6vw;flex-shrink:0">→</div>
+      <div style="flex:1;padding:1.4vh 1.6vw;display:flex;align-items:center;gap:10px;border-left:1px solid var(--line);border-right:1px solid var(--line)">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--brand-3);flex-shrink:0"></span>
+        <div>
+          <div style="font-family:var(--font-display);font-weight:600;font-size:clamp(0.82rem,0.95vw,0.95rem);color:var(--ink-2)">Weekly Meeting</div>
+          <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);margin-top:2px">All findings reviewed once a week</div>
+        </div>
+      </div>
+      <div style="color:var(--brand);font-size:1.1rem;padding:0 0.6vw;flex-shrink:0">→</div>
+      <div style="flex:1;padding:1.4vh 1.6vw;display:flex;align-items:center;gap:10px">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--brand);flex-shrink:0"></span>
+        <div>
+          <div style="font-family:var(--font-display);font-weight:600;font-size:clamp(0.82rem,0.95vw,0.95rem);color:var(--brand-2)">Data Accuracy Space</div>
+          <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);margin-top:2px">Every finding logged &amp; tracked</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE: STATISTICAL SAMPLING ============ -->
+  <section class="slide" data-slide="6">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// data validation</div>
+    </div>
+    <div class="kicker">06 / Validation</div>
+    <h2 class="slide-title">Smarter <span class="accent">validation</span> coverage</h2>
+
+    <!-- Before / Now cards -->
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr); flex: 0 0 auto; align-items: start; margin-bottom: 2vh;">
+      <div class="card" style="border-color:rgba(220,38,38,0.2);background:linear-gradient(180deg,#fff8f8 0%,#fff5f5 100%);padding:2vh 2vw;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.2vh">
+          <span class="priority-badge emergency" style="font-size:0.78rem;padding:4px 12px">Before</span>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:#DC2626;letter-spacing:0.06em">MANUAL SPOT-CHECK</span>
+        </div>
+        <ul style="margin:0">
+          <li style="color:#DC2626"><strong style="color:#DC2626">10–20 SKUs</strong> checked out of 1,000 total</li>
+          <li style="color:#DC2626"><strong style="color:#DC2626">~1–2% coverage</strong> — mostly guesswork</li>
+          <li style="color:#DC2626"><strong style="color:#DC2626">No statistical basis</strong> for sample selection</li>
+          <li style="color:#DC2626"><strong style="color:#DC2626">Issues slipping through</strong> to clients undetected</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:2vh 2vw;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.2vh">
+          <span class="tag solid" style="font-size:0.78rem;padding:4px 12px;border-radius:6px">Now</span>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--brand);letter-spacing:0.06em">STATISTICAL SAMPLING</span>
+        </div>
+        <ul style="margin:0">
+          <li><strong>286 SKUs</strong> — mathematically derived minimum</li>
+          <li><strong>95% confidence level</strong>, ±5% margin of error</li>
+          <li><strong>Finite population correction</strong> applied (N = 1,000)</li>
+          <li><strong>Higher data accuracy</strong> with a defensible standard</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Formula callout strip -->
+    <div style="background:linear-gradient(135deg,var(--brand) 0%,#2563eb 100%);border-radius:14px;padding:2vh 2.5vw;display:flex;align-items:center;gap:3vw;flex:0 0 auto;">
+      <!-- Formula -->
+      <div style="flex:1;min-width:0;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:rgba(255,255,255,0.6);letter-spacing:0.1em;margin-bottom:0.5vh">COCHRAN FORMULA — FINITE POPULATION</div>
+        <div style="font-family:var(--font-mono);font-size:clamp(0.85rem,1vw,1rem);color:#fff;line-height:1.9">
+          n₀ = Z² · p · (1−p) / e²
+          <br>
+          <span style="color:rgba(255,255,255,0.55);font-size:0.82em">n = n₀ / (1 + (n₀ − 1) / N)</span>
+        </div>
+      </div>
+      <!-- Divider -->
+      <div style="width:1px;height:6vh;background:rgba(255,255,255,0.2);flex-shrink:0;"></div>
+      <!-- Params -->
+      <div style="flex:1;min-width:0;display:flex;gap:1.5vw;">
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(255,255,255,0.55);margin-bottom:0.3vh">CONFIDENCE</div>
+          <div style="font-size:clamp(1rem,1.4vw,1.3rem);font-weight:700;color:#fff">95%</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(255,255,255,0.55);margin-bottom:0.3vh">MARGIN OF ERROR</div>
+          <div style="font-size:clamp(1rem,1.4vw,1.3rem);font-weight:700;color:#fff">±5%</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(255,255,255,0.55);margin-bottom:0.3vh">POPULATION (N)</div>
+          <div style="font-size:clamp(1rem,1.4vw,1.3rem);font-weight:700;color:#fff">1,000</div>
+        </div>
+      </div>
+      <!-- Divider -->
+      <div style="width:1px;height:6vh;background:rgba(255,255,255,0.2);flex-shrink:0;"></div>
+      <!-- Result -->
+      <div style="text-align:center;flex-shrink:0;">
+        <div style="font-family:var(--font-mono);font-size:0.7rem;color:rgba(255,255,255,0.55);margin-bottom:0.3vh">REQUIRED SAMPLE</div>
+        <div style="font-size:clamp(2rem,3vw,2.8rem);font-weight:800;color:#fff;line-height:1">286</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:0.2vh">SKUs per release</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE: PROACTIVE REVIEW ============ -->
+  <section class="slide" data-slide="dq">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// data quality</div>
+    </div>
+    <div class="kicker">/ Process</div>
+    <h2 class="slide-title">Strengthening Data Quality Through <span class="accent">Proactive Review</span></h2>
+
+    <p class="slide-lede">We are improving data accuracy by catching issues early — through structured reviews, team ownership, and proactive coverage checks.</p>
+
+    <!-- 3 horizontal cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;flex:0 0 auto;align-items:stretch;margin-bottom:2vh;">
+
+      <div class="card" style="padding:2.4vh 2vw;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--brand);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.2vh;">Weekly Review</div>
+        <ul style="margin:0;padding-left:1.1em;">
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Review Root Cause Analysis (RCA)</li>
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Define short-term &amp; long-term action items</li>
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Gather team feedback on accuracy tasks</li>
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Discuss and resolve blockers</li>
+        </ul>
+      </div>
+
+      <div class="card" style="padding:2.4vh 2vw;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--brand);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.2vh;">Completion Gate</div>
+        <ul style="margin:0;padding-left:1.1em;">
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Every data accuracy task reviewed before close</li>
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">New brands reviewed before marked complete</li>
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Bugs verified before resolution is accepted</li>
+        </ul>
+      </div>
+
+      <div class="card" style="padding:2.4vh 2vw;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--brand);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.2vh;">Proactive Price Coverage</div>
+        <ul style="margin:0 0 1.4vh;padding-left:1.1em;">
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Proactively check &amp; add new price sheets</li>
+          <li style="font-size:clamp(0.85rem,0.92vw,0.95rem);color:var(--body);line-height:1.7;">Monitor rebates before client issues arise</li>
+        </ul>
+        <div class="tag-row">
+          <span class="tag solid">Nationwide</span>
+          <span class="tag solid">NECO</span>
+          <span class="tag solid">Milestone</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Goal strip -->
+    <div style="background:var(--brand-tint);border:1px solid rgba(37,99,235,0.18);border-radius:12px;padding:1.6vh 2vw;flex-shrink:0;display:flex;align-items:center;gap:1.2vw;">
+      <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--brand);letter-spacing:0.1em;text-transform:uppercase;flex-shrink:0;">Goal</div>
+      <div style="width:1px;height:2.4vh;background:rgba(37,99,235,0.2);flex-shrink:0;"></div>
+      <p style="margin:0;font-size:clamp(0.88rem,0.95vw,0.98rem);color:var(--heading);line-height:1.5;">Improve data accuracy by catching issues early — before they reach the client.</p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 6 (NEW): BUG DECLINE ============ -->
+  <section class="slide" data-slide="6">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// impact</div>
+    </div>
+    <div class="kicker">05 / Result</div>
+    <h2 class="slide-title">Client-reported bugs are <span class="accent">declining</span></h2>
+    <p class="slide-lede">Proactive detection and weekly reviews are reducing client-reported issues month over month.</p>
+
+    <!-- Zero-bug milestone NEON -->
+    <div style="display:flex;align-items:center;gap:2vw;margin-bottom:2vh;padding:1.4vh 2vw;background:#020c04;border:1px solid #00FF88;border-radius:12px;flex-shrink:0;position:relative;overflow:hidden;box-shadow:0 0 24px rgba(0,255,136,0.15),inset 0 0 24px rgba(0,255,136,0.04);">
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,255,136,0.06) 0%,transparent 60%);pointer-events:none;"></div>
+
+      <!-- Neon "0" -->
+      <div class="zero-ring" style="flex-shrink:0;width:clamp(52px,5.5vw,68px);height:clamp(52px,5.5vw,68px);border-radius:50%;background:rgba(0,255,136,0.07);border:1.5px solid #00FF88;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <span style="font-family:var(--font-display);font-size:clamp(1.5rem,2.2vw,2.4rem);font-weight:800;color:#00FF88;line-height:1;letter-spacing:-0.04em;text-shadow:0 0 12px #00FF88,0 0 24px rgba(0,255,136,0.5);">0</span>
+        <span style="font-family:var(--font-mono);font-size:0.55rem;color:rgba(0,255,136,0.6);letter-spacing:0.1em;text-transform:uppercase;">bugs</span>
+      </div>
+
+      <div style="width:1px;height:4.5vh;background:rgba(0,255,136,0.2);flex-shrink:0;"></div>
+
+      <div>
+        <div style="font-family:var(--font-mono);font-size:0.66rem;color:rgba(0,255,136,0.55);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.3vh;">Milestone · May 29 – June 3, 2026</div>
+        <div style="font-size:clamp(0.92rem,1.05vw,1.05rem);font-weight:700;color:#fff;line-height:1.3;">6 consecutive days with <span style="color:#00FF88;text-shadow:0 0 8px rgba(0,255,136,0.6);">zero client-reported bugs</span></div>
+      </div>
+    </div>
+
+    <!-- Bar chart -->
+    <div style="display:flex;align-items:flex-end;gap:2vw;flex:0 0 auto;position:relative;">
+
+      <!-- March -->
+      <div class="bar-col-1" style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div class="bar-num" style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,2.6vw,2.6rem);color:#DC2626;letter-spacing:-0.04em;line-height:1;margin-bottom:10px;">72</div>
+        <div class="bug-bar" style="width:100%;height:18vh;background:linear-gradient(to top,#991B1B,#F87171);border-radius:12px 12px 0 0;"></div>
+      </div>
+
+      <!-- April -->
+      <div class="bar-col-2" style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div class="bar-num" style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,2.6vw,2.6rem);color:#EA580C;letter-spacing:-0.04em;line-height:1;margin-bottom:10px;">39</div>
+        <div class="bug-bar" style="width:100%;height:9.7vh;background:linear-gradient(to top,#C2410C,#FB923C);border-radius:12px 12px 0 0;"></div>
+      </div>
+
+      <!-- May -->
+      <div class="bar-col-3" style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div class="bar-num" style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,2.6vw,2.6rem);color:var(--brand-2);letter-spacing:-0.04em;line-height:1;margin-bottom:10px;">35</div>
+        <div class="bug-bar" style="width:100%;height:8.7vh;background:linear-gradient(to top,var(--brand-2),var(--brand-3));border-radius:12px 12px 0 0;"></div>
+      </div>
+
+      <!-- June -->
+      <div class="bar-col-4" style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div class="bar-num" style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.6rem,2.6vw,2.6rem);color:var(--brand);letter-spacing:-0.04em;line-height:1;margin-bottom:10px;">36</div>
+        <div class="bug-bar" style="width:100%;height:9vh;background:linear-gradient(to top,var(--brand-2),var(--brand));border-radius:12px 12px 0 0;"></div>
+      </div>
+
+    </div>
+
+    <!-- Month labels row -->
+    <div style="display:flex;gap:2vw;margin-top:1.2vh;flex-shrink:0;">
+      <div style="flex:1;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:0.8rem;color:var(--muted);letter-spacing:0.06em;">March 2026</div>
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:#DC2626;margin-top:3px;letter-spacing:0.04em;">Before restructure</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:0.8rem;color:var(--muted);letter-spacing:0.06em;">April 2026</div>
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--brand);margin-top:3px;letter-spacing:0.04em;">After restructure</div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:0.8rem;color:var(--muted);letter-spacing:0.06em;">May 2026</div>
+        <div style="height:1.1em;"></div>
+      </div>
+      <div style="flex:1;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:0.8rem;color:var(--muted);letter-spacing:0.06em;">June 2026</div>
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--brand);margin-top:3px;letter-spacing:0.04em;">−50% vs. March</div>
+      </div>
+    </div>
+
+    <!-- Summary strip -->
+    <div style="display:flex;align-items:center;gap:0;margin-top:2vh;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;flex-shrink:0;">
+      <div style="flex:1;padding:1.2vh 1.6vw;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Before</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.2rem,1.6vw,1.6rem);color:#DC2626;letter-spacing:-0.02em;">72 bugs / month</div>
+      </div>
+      <div style="width:1px;background:var(--line);align-self:stretch;"></div>
+      <div style="flex:1;padding:1.2vh 1.6vw;text-align:center;">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">June 2026</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.2rem,1.6vw,1.6rem);color:var(--brand);letter-spacing:-0.02em;">36 bugs / month</div>
+      </div>
+      <div style="width:1px;background:var(--line);align-self:stretch;"></div>
+      <div style="flex:1;padding:1.2vh 1.6vw;text-align:center;background:var(--brand-tint);">
+        <div style="font-family:var(--font-mono);font-size:0.68rem;color:var(--brand);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;">Reduction</div>
+        <div style="font-family:var(--font-display);font-weight:700;font-size:clamp(1.2rem,1.6vw,1.6rem);color:var(--brand-2);letter-spacing:-0.02em;">−50% in 3 months</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE: THANK YOU TO THE TEAM ============ -->
+  <section class="slide" data-slide="ty">
+
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// team</div>
+    </div>
+
+    <!-- Split layout: text left, photo right -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3vw;flex:1 1 auto;min-height:0;align-items:center;">
+
+      <!-- Left: text content -->
+      <div style="display:flex;flex-direction:column;justify-content:center;gap:2.8vh;">
+
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.14em;color:var(--brand);text-transform:uppercase;margin-bottom:1.2vh;">Recognition</div>
+          <h2 style="font-family:var(--font-display);font-size:clamp(2rem,3vw,3.2rem);font-weight:800;color:var(--heading);line-height:1.06;margin:0 0 0.7vh;letter-spacing:-0.03em;">
+            Thank You to<br><span class="accent">The Team</span>
+          </h2>
+          <p style="font-size:clamp(0.88rem,0.95vw,0.98rem);color:var(--muted);font-style:italic;margin:0;">
+            This change happened because of everyone.
+          </p>
+        </div>
+
+        <!-- 4 points -->
+        <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);">
+          <div style="display:flex;align-items:center;gap:1vw;padding:1.3vh 0;border-bottom:1px solid var(--line);">
+            <div style="width:3px;height:1.6vh;background:var(--brand);border-radius:2px;flex-shrink:0;"></div>
+            <span style="font-size:clamp(0.88rem,0.95vw,0.98rem);font-weight:600;color:var(--heading);">Adapting to change</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:1vw;padding:1.3vh 0;border-bottom:1px solid var(--line);">
+            <div style="width:3px;height:1.6vh;background:var(--brand);border-radius:2px;flex-shrink:0;"></div>
+            <span style="font-size:clamp(0.88rem,0.95vw,0.98rem);font-weight:600;color:var(--heading);">Taking more ownership</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:1vw;padding:1.3vh 0;border-bottom:1px solid var(--line);">
+            <div style="width:3px;height:1.6vh;background:var(--brand);border-radius:2px;flex-shrink:0;"></div>
+            <span style="font-size:clamp(0.88rem,0.95vw,0.98rem);font-weight:600;color:var(--heading);">Supporting each other</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:1vw;padding:1.3vh 0;">
+            <div style="width:3px;height:1.6vh;background:var(--brand);border-radius:2px;flex-shrink:0;"></div>
+            <span style="font-size:clamp(0.88rem,0.95vw,0.98rem);font-weight:600;color:var(--heading);">Continuously improving</span>
+          </div>
+        </div>
+
+        <!-- Closing -->
+        <p style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin:0;">
+          Every improvement is a team effort.
+        </p>
+
+      </div>
+
+      <!-- Right: two photos stacked, same fixed height -->
+      <div style="display:flex;flex-direction:column;gap:1.5vh;">
+        <div style="height:22vh;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.12);background:#f1f5f9;display:flex;align-items:center;justify-content:center;">
+          <img src="assets/IMG_5681.jpg" alt="The Team"
+               style="width:100%;height:100%;object-fit:contain;display:block;" />
+        </div>
+        <div style="height:22vh;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,0.12);background:#f1f5f9;display:flex;align-items:center;justify-content:center;">
+          <img src="assets/e1a80770-278a-47c1-bdb4-eda8b6fed726.jpg" alt="The Team"
+               style="width:100%;height:100%;object-fit:contain;display:block;" />
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7: CLICKUP SPACES ============ -->
+  <section class="slide" data-slide="6">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// workflow</div>
+    </div>
+    <div class="kicker">05 / Workflow</div>
+    <h2 class="slide-title">New ClickUp <span class="accent">spaces</span> for clear workflow</h2>
+    <p class="slide-lede">Each space has a clear purpose, dedicated ownership, and a structured workflow — no ambiguity on what goes where.</p>
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr);">
+      <div class="card">
+        <div class="card-index">— 01</div>
+        <h3>Product Space</h3>
+        <p>Features, integrations, new brands, new endpoints, and large changes.</p>
+        <ul>
+          <li>Idea → Scoping → Sprint</li>
+          <li>Turning ideas into planned execution</li>
+        </ul>
+        <div class="tag-row"><span class="tag">Features</span><span class="tag">Integrations</span><span class="tag">New Brands</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 02</div>
+        <h3>Data Accuracy Space</h3>
+        <p>Quality checks, validation, and prevention tasks before release.</p>
+        <ul>
+          <li>Internal findings &amp; reported issues</li>
+          <li>Data quality improvement tasks</li>
+          <li>Validation improvements &amp; coverage</li>
+        </ul>
+        <div class="tag-row"><span class="tag">Quality</span><span class="tag">Validation</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 03</div>
+        <h3>Infrastructure Space</h3>
+        <p>Fast execution for operational improvements with clear change classification.</p>
+        <ul>
+          <li><strong>Small change:</strong> Direct execution — no sprint needed</li>
+          <li><strong>Large change:</strong> Scope → Sprint planning required</li>
+        </ul>
+        <div class="tag-row"><span class="tag">Infra</span><span class="tag">Ops</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 04</div>
+        <h3>Pricing Update Space</h3>
+        <p>Pricing tasks organized and tracked per quarter for structured, predictable delivery.</p>
+        <ul>
+          <li><strong>Q1</strong> — First quarter pricing updates</li>
+          <li><strong>Q2</strong> — Second quarter pricing updates</li>
+          <li><strong>Q3</strong> — Third quarter pricing updates</li>
+          <li><strong>Q4</strong> — Fourth quarter pricing updates</li>
+        </ul>
+        <div class="tag-row"><span class="tag">Pricing</span><span class="tag solid">Per Quarter</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 9: SECTION BREAK — BUILDING THE NEXT FOUNDATION ============ -->
+  <section class="slide title-slide" data-slide="9">
+    <img class="title-logo" src="assets/skulytics-logo.png" alt="Skulytics" />
+    <div class="title-eyebrow">What's Next</div>
+    <h1 style="font-size:clamp(2.4rem,5.5vw,5rem)">Building the <span class="accent">Next</span> Foundation</h1>
+    <p class="subtitle">Introducing our focus for the next 3 months ahead.<br>Presented by Rere &nbsp;·&nbsp; Product Manager, Skulytics</p>
+    <div class="title-meta">
+      <span>Q3 2026</span>
+      <span class="dot"></span>
+      <span>3-Month Roadmap</span>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 10: API V3 RESTRUCTURE ============ -->
+  <section class="slide" data-slide="10">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// api v3</div>
+    </div>
+    <div class="kicker">08 / API</div>
+    <h2 class="slide-title">API <span class="accent">V3</span> Restructure</h2>
+    <p class="slide-lede">Redesigned for growth — modular, efficient, and built to handle increasing data demands at scale.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-index">— 01</div>
+        <h3>Scalable Architecture</h3>
+        <p>Modular and efficient design built to handle increasing data demands as Skulytics grows.</p>
+        <div class="tag-row"><span class="tag">Modular</span><span class="tag">Scalable</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 02</div>
+        <h3>Client Experience</h3>
+        <p>Faster, cleaner API responses that deliver a smoother and more reliable experience for every client.</p>
+        <div class="tag-row"><span class="tag">Performance</span><span class="tag">Reliability</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 03</div>
+        <h3>Integration Flow</h3>
+        <p>Streamlined endpoints and clear structure make integration simpler and more maintainable.</p>
+        <div class="tag-row"><span class="tag">Clean Endpoints</span><span class="tag">DX</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 11: WEBHOOK EVOLUTION ============ -->
+  <section class="slide" data-slide="11">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// webhooks</div>
+    </div>
+    <div class="kicker">09 / Webhooks</div>
+    <h2 class="slide-title">Webhook <span class="accent">evolution</span></h2>
+
+    <div class="cards" style="grid-template-columns: repeat(2, 1fr); flex: 0 0 auto; align-items: start;">
+      <div class="card" style="border-color:rgba(220,38,38,0.2);background:linear-gradient(180deg,#fff8f8 0%,#fff5f5 100%);padding:2.5vh 2vw;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.6vh">
+          <span class="priority-badge emergency" style="font-size:0.78rem;padding:4px 12px">Before</span>
+        </div>
+        <p style="color:var(--body);font-size:clamp(0.85rem,0.95vw,0.95rem);line-height:1.6;margin-bottom:1.8vh">One webhook carried multiple datapoints — complex to integrate and harder to debug.</p>
+        <ul>
+          <li style="color:#DC2626"><strong style="color:#DC2626">1 webhook = multiple datapoints</strong></li>
+          <li style="color:#DC2626"><strong style="color:#DC2626">Complex integration</strong> for clients</li>
+          <li style="color:#DC2626"><strong style="color:#DC2626">Harder to debug</strong> and monitor</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:2.5vh 2vw;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.6vh">
+          <span class="tag solid" style="font-size:0.78rem;padding:4px 12px;border-radius:6px">Future</span>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--brand);letter-spacing:0.08em">PLANNED · Q3 2026</span>
+        </div>
+        <p style="color:var(--body);font-size:clamp(0.85rem,0.95vw,0.95rem);line-height:1.6;margin-bottom:1.8vh">Redesigned for a clean, predictable 1-to-1 structure.</p>
+        <ul>
+          <li><strong>1 webhook = 1 endpoint</strong> — clear mapping</li>
+          <li><strong>Easier integration</strong> for clients</li>
+          <li><strong>Better scalability</strong> — decoupled endpoints</li>
+          <li><strong>Better reliability</strong> — simpler to debug &amp; monitor</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 12: MAKING SKULYTICS SMARTER ============ -->
+  <section class="slide" data-slide="12">
+    <div class="header">
+      <img class="logo-mark" src="assets/skulytics-logo.png" alt="Skulytics" />
+      <div class="brand-sub">// skuly-ai</div>
+    </div>
+    <div class="kicker">10 / Intelligence</div>
+    <h2 class="slide-title">Making Skulytics <span class="accent">smarter</span></h2>
+    <p class="slide-lede">Skuly AI learns from data patterns to deliver smarter, more accurate recommendations — freeing the team to focus on higher-value work.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-index">— 01</div>
+        <h3>Automation</h3>
+        <p>Streamlining repetitive tasks and workflows so the team can focus on higher-value work.</p>
+        <div class="tag-row"><span class="tag">Efficiency</span><span class="tag">Speed</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 02</div>
+        <h3>Intelligence</h3>
+        <p>Skuly AI learns from data patterns to deliver smarter, more accurate product recommendations.</p>
+        <div class="tag-row"><span class="tag solid">Skuly-AI</span><span class="tag">ML</span></div>
+      </div>
+      <div class="card">
+        <div class="card-index">— 03</div>
+        <h3>Better Insights</h3>
+        <p>Deeper visibility into data quality and performance to drive confident decisions at every level.</p>
+        <div class="tag-row"><span class="tag">Observability</span><span class="tag">Data</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 13: CLOSING ============ -->
+  <section class="slide closing-slide" data-slide="13">
+    <img class="title-logo" src="assets/skulytics-logo.png" alt="Skulytics" />
+    <div class="title-eyebrow">Skulytics Team</div>
+    <div class="thanks">Thank <span class="accent">You</span>.</div>
+    <p class="closing-sub">
+      Building together: Better ownership · Better quality · Better product · Better future.<br>
+      Every improvement is a team effort.
+    </p>
+    <div class="signature">Raihan Ayita Putri — Product Management · June 2026</div>
+  </section>
+
+</div>
+
+<div class="deck-footer">
+  <div class="slide-counter">
+    <span class="current" id="cur">01</span> / <span id="total">13</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+  <div class="controls">
+    <button class="ctrl-btn" id="theme" title="Toggle dark mode" aria-label="Toggle theme">
+      <span class="theme-icon-light">☀</span>
+      <span class="theme-icon-dark">☾</span>
+    </button>
+    <button class="ctrl-btn" id="prev" title="Previous">‹</button>
+    <button class="ctrl-btn" id="next" title="Next">›</button>
+    <button class="ctrl-btn" id="full" title="Fullscreen">⛶</button>
+  </div>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const curEl = document.getElementById('cur');
+  const totalEl = document.getElementById('total');
+  const progressEl = document.getElementById('progress');
+
+  totalEl.textContent = String(total).padStart(2, '0');
+
+  function show(i) {
+    if (i < 0 || i >= total) return;
+    slides.forEach((s, idx) => {
+      s.classList.remove('active', 'prev');
+      if (idx < i) s.classList.add('prev');
+      if (idx === i) s.classList.add('active');
+    });
+    current = i;
+    curEl.textContent = String(i + 1).padStart(2, '0');
+    progressEl.style.width = ((i + 1) / total) * 100 + '%';
+  }
+
+  document.getElementById('next').addEventListener('click', () => show(Math.min(current + 1, total - 1)));
+  document.getElementById('prev').addEventListener('click', () => show(Math.max(current - 1, 0)));
+
+  // ============ THEME TOGGLE ============
+  const savedTheme = localStorage.getItem('skuly-theme');
+  if (savedTheme === 'dark') document.body.classList.add('dark');
+
+  document.getElementById('theme').addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('skuly-theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  document.getElementById('full').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      show(Math.min(current + 1, total - 1));
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      show(Math.max(current - 1, 0));
+    } else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen();
+      }
+    } else if (e.key === 't' || e.key === 'T') {
+      document.getElementById('theme').click();
+    } else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(total - 1);
+  });
+
+  let touchStart = null;
+  document.addEventListener('touchstart', (e) => { touchStart = e.touches[0].clientX; });
+  document.addEventListener('touchend', (e) => {
+    if (touchStart === null) return;
+    const dx = e.changedTouches[0].clientX - touchStart;
+    if (Math.abs(dx) > 50) show(dx < 0 ? Math.min(current + 1, total - 1) : Math.max(current - 1, 0));
+    touchStart = null;
+  });
+
+  show(0);
+</script>
+
+</body>
+</html>
